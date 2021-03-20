@@ -1,50 +1,56 @@
+input.onPinPressed(TouchPin.P0, function () {
+    SnakeHead.turn(Direction.Left, 90)
+})
 input.onButtonPressed(Button.A, function () {
-    蛇頭.turn(Direction.Right, 90)
+    SnakeHead.turn(Direction.Left, 90)
 })
 input.onButtonPressed(Button.B, function () {
-    蛇頭.turn(Direction.Left, 90)
+    SnakeHead.turn(Direction.Right, 90)
+})
+input.onPinPressed(TouchPin.P1, function () {
+    SnakeHead.turn(Direction.Right, 90)
 })
 let i = 0
-let 蛇身各節: game.LedSprite[] = []
-let 蛇頭: game.LedSprite = null
-蛇頭 = game.createSprite(1, 2)
-let 水果 = game.createSprite(randint(0, 0), randint(0, 0))
-水果.set(LedSpriteProperty.Blink, 100)
-蛇頭.set(LedSpriteProperty.Direction, 90)
-let 蛇X陣列 = [1]
-let 蛇Y陣列 = [2]
-let 蛇身長度 = 0
+let snakeBody: game.LedSprite[] = []
+let SnakeHead: game.LedSprite = null
+SnakeHead = game.createSprite(1, 2)
+let apple = game.createSprite(randint(0, 0), randint(0, 0))
+apple.set(LedSpriteProperty.Blink, 100)
+SnakeHead.set(LedSpriteProperty.Direction, 90)
+let snakeX = [1]
+let snakeY = [2]
+let SnakeLength = 0
 game.setScore(0)
 basic.forever(function () {
-    if (蛇頭.isTouching(水果)) {
+    if (SnakeHead.isTouching(apple)) {
         game.addScore(1)
-        水果.set(LedSpriteProperty.X, randint(0, 0))
-        水果.set(LedSpriteProperty.Y, randint(0, 0))
+        apple.set(LedSpriteProperty.X, randint(0, 0))
+        apple.set(LedSpriteProperty.Y, randint(0, 0))
         if (game.score() % 2 == 0) {
-            蛇X陣列.push(蛇X陣列[蛇身長度])
-            蛇Y陣列.push(蛇Y陣列[蛇身長度])
-            蛇身長度 += 1
-            蛇身各節[蛇身長度] = game.createSprite(蛇X陣列[蛇身長度], 蛇Y陣列[蛇身長度])
+            snakeX.push(snakeX[SnakeLength])
+            snakeY.push(snakeY[SnakeLength])
+            SnakeLength += 1
+            snakeBody[SnakeLength] = game.createSprite(snakeX[SnakeLength], snakeY[SnakeLength])
         }
     }
 })
 basic.forever(function () {
-    蛇頭.move(1)
-    if (蛇X陣列[0] == 蛇頭.get(LedSpriteProperty.X) && 蛇Y陣列[0] == 蛇頭.get(LedSpriteProperty.Y)) {
+    SnakeHead.move(1)
+    if (snakeX[0] == SnakeHead.get(LedSpriteProperty.X) && snakeY[0] == SnakeHead.get(LedSpriteProperty.Y)) {
         game.gameOver()
     }
-    i = 蛇身長度
-    for (let index = 0; index < 蛇身長度; index++) {
-        if (蛇X陣列[i - 1] == 蛇頭.get(LedSpriteProperty.X) && 蛇Y陣列[i - 1] == 蛇頭.get(LedSpriteProperty.Y)) {
+    i = SnakeLength
+    for (let index = 0; index < SnakeLength; index++) {
+        if (snakeX[i - 1] == SnakeHead.get(LedSpriteProperty.X) && snakeY[i - 1] == SnakeHead.get(LedSpriteProperty.Y)) {
             game.gameOver()
         }
-        蛇X陣列[i] = 蛇X陣列[i - 1]
-        蛇Y陣列[i] = 蛇Y陣列[i - 1]
-        蛇身各節[i].set(LedSpriteProperty.X, 蛇X陣列[i])
-        蛇身各節[i].set(LedSpriteProperty.Y, 蛇Y陣列[i])
+        snakeX[i] = snakeX[i - 1]
+        snakeY[i] = snakeY[i - 1]
+        snakeBody[i].set(LedSpriteProperty.X, snakeX[i])
+        snakeBody[i].set(LedSpriteProperty.Y, snakeY[i])
         i += -1
     }
-    蛇X陣列[0] = 蛇頭.get(LedSpriteProperty.X)
-    蛇Y陣列[0] = 蛇頭.get(LedSpriteProperty.Y)
+    snakeX[0] = SnakeHead.get(LedSpriteProperty.X)
+    snakeY[0] = SnakeHead.get(LedSpriteProperty.Y)
     basic.pause(1000 - game.score() * 20)
 })
